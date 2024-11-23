@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Expenses</title>
+
+</head>
+
+<body>
+
+    <div>
+
+        <form id="expenseForm">
+
+            <select name="category" id="category" required>
+
+                <option value="" disabled selected hidden>Select Category</option>
+                <option value="food">Food</option>
+                <option value="travel">Travel</option>
+                <option value="recharge">Recharge</option>
+                <option value="eb">EB</option>
+                <option value="entertainment">Entertainment</option>
+                <option value="others">Others</option>
+
+            </select>
+
+            <input type="text" id="description" name="description" placeholder="Description" minlength="1" maxlength="25" required>
+            <input type="number" id="amount" name="amount" step="0.01" placeholder="Amount" min="1" max="100000" required>
+            
+            <button type="submit">Add Expense</button>
+
+        </form>
+
+    </div>
+
+    <div id="premiumUser"></div>
+
+    <div id="allExpense"></div>
+
+    <div id="dropin-container"></div>
+
+    <p id="paymentAmount"></p>
+
+    <button id="submitPayment" style="display: none;">Submit Payment</button>
+
+    <script src="https://js.braintreegateway.com/web/dropin/1.33.0/js/dropin.min.js"></script>
+
+    <script src="app.js"></script>
+
+</body>
+
+</html>
