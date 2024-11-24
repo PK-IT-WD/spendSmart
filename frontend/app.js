@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const submitPayment = document.getElementById('submitPayment');
     const paymentAmount = document.getElementById('paymentAmount');
     const premiumUser = document.getElementById('premiumUser');
+    const leaderboard = document.getElementById('leaderboard');
 
     if (expenseForm || allExpense) {
 
@@ -309,6 +310,40 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (data.success) {
 
                 premiumUser.textContent = 'Premium User';
+
+                const div = document.createElement('div');
+                const leaderboardButton = document.createElement('button');
+                leaderboardButton.textContent = 'Show Leaderboard';
+
+                div.appendChild(leaderboardButton);
+                premiumUser.appendChild(div);
+
+                if (leaderboardButton) {
+                    leaderboardButton.addEventListener('click', async () => {
+                        
+                        try {
+                            const response = await fetch('/premiumFeature', {
+                                method: 'GET'
+                            });
+                            
+                            const data = await response.json();
+                                if (data.success) {
+                                    
+                                    leaderboard.innerHTML = "";
+                                    data.sortedExpense.forEach(expense => {
+                                        const div = document.createElement('div');
+                                        div.innerHTML = `User Name - ${expense.userName} Total Expense - ${expense.total}`
+                                        leaderboard.appendChild(div);
+                                    })
+                                }
+
+                        } catch (err) {
+                            console.log(err);
+                        }
+                        
+                    })
+                }
+                
     
             }
 

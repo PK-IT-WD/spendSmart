@@ -368,6 +368,32 @@ app.get('/premiumUser', async (req, res) => {
     }
 });
 
+app.get('/premiumFeature', async (req, res) => {
+    const allExpense = await Expense.findAll({
+        include: {
+            model: userDetails,
+            attributes: ['userName']
+        }
+    });
+
+    const userExpense = {};
+
+        allExpense.forEach(expense => {
+            const amount = parseFloat(expense.dataValues.amount);
+            const userName = expense.userDetail?.dataValues.userName;
+
+            if (userExpense[userName]) {
+                userExpense[userName] += amount
+            } else {
+                userExpense[userName] = amount
+            }
+        });
+        const sortedExpense = Object.entries(userExpense)
+            .map(([userName, total]) => ({ userName, total }))
+            .sort((a, b) => b.total - a.total);
+        res.json({success: true, sortedExpense});
+});
+
 
 const PORT = 3000;
 app.listen(PORT, () => {
