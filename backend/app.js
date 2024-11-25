@@ -116,31 +116,34 @@ const gateway = new braintree.BraintreeGateway({
 });
 
 Expense.addHook('afterCreate', async (expense, options) => {
-    const user = await userDetails.findByPk(expense.userID);
+    const transaction = options.transaction;
+    const user = await userDetails.findByPk(expense.userID, {transaction});
     if (user) {
         user.totalExpense = parseFloat(user.totalExpense) + parseFloat(expense.amount);
-        await user.save();
+        await user.save({transaction});
     }
 });
 
 Expense.addHook('afterUpdate', async (expense, options) => {
+    const transaction = options.transaction;
     const previous = expense._previousDataValues.amount;
     const current = expense.amount;
 
     if (previous !== current) {
-        const user = await userDetails.findByPk(expense.userID);
+        const user = await userDetails.findByPk(expense.userID, {transaction});
         if (user) {
             user.totalExpense = parseFloat(user.totalExpense) - parseFloat(previous) + parseFloat(current);
-            await user.save();
+            await user.save({transaction});
         }
     }
 });
 
 Expense.addHook('afterDestroy', async (expense, options) => {
-    const user = await userDetails.findByPk(expense.userID);
+    const transaction = options.transaction;
+    const user = await userDetails.findByPk(expense.userID, {transaction});
     if (user) {
         user.totalExpense = parseFloat(user.totalExpense) - parseFloat(expense.amount);
-        await user.save();
+        await user.save({transaction});
     }
 });
 
