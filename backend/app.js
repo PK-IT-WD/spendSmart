@@ -369,29 +369,31 @@ app.get('/premiumUser', async (req, res) => {
 });
 
 app.get('/premiumFeature', async (req, res) => {
-    const allExpense = await Expense.findAll({
-        include: {
-            model: userDetails,
-            attributes: ['userName']
-        }
-    });
-
-    const userExpense = {};
-
-        allExpense.forEach(expense => {
-            const amount = parseFloat(expense.dataValues.amount);
-            const userName = expense.userDetail?.dataValues.userName;
-
-            if (userExpense[userName]) {
-                userExpense[userName] += amount
-            } else {
-                userExpense[userName] = amount
-            }
+    try {
+        const userExpense = await Expense.findAll({
+            attributes: [
+                [Sequelize.col('userDetail.userName'), 'userName'],
+                [Sequelize.fn('SUM', Sequelize.col('amount')), 'total']
+            ],
+            include: {
+                model: userDetails,
+                attributes: []
+            },
+            group: ['userDetail.id'],
+            order: [[Sequelize.fn('SUM', Sequelize.col('amount')), 'DESC']]
         });
-        const sortedExpense = Object.entries(userExpense)
-            .map(([userName, total]) => ({ userName, total }))
-            .sort((a, b) => b.total - a.total);
-        res.json({success: true, sortedExpense});
+        res.json({
+            success: true,
+            sortedExpense: userExpense.map(expense => ({
+                userName: expense.dataValues.userName,
+                total: parseFloat(expense.dataValues.total)
+            }))
+        })
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({success: false, message: 'Data not taken'});
+    }
+    
 });
 
 
