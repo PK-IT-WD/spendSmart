@@ -28,6 +28,11 @@ const userDetails = sequelize.define('userDetails', {
     password: {
         type: DataTypes.STRING,
         allowNull: false
+    },
+    
+    totalExpense: {
+        type: DataTypes.DECIMAL,
+        defaultValue: 0
     }
 
 });
@@ -109,6 +114,37 @@ const gateway = new braintree.BraintreeGateway({
     publicKey: 'j3nj7tw7drcfvvbm',
     privateKey: '9d1b785af33f80512cd98155866cca34'
 });
+
+Expense.addHook('afterCreate', async (expense, options) => {
+    const user = await userDetails.findByPk(expense.userID);
+    if (user) {
+        user.totalExpense = parseFloat(user.totalExpense) + parseFloat(expense.amount);
+        await user.save();
+    }
+});
+
+Expense.addHook('afterUpdate', async (expense, options) => {
+    const previous = expense._previousDataValues.amount;
+    const current = expense.amount;
+
+    if (previous !== current) {
+        const user = await userDetails.findByPk(expense.userID);
+        if (user) {
+            user.totalExpense = parseFloat(user.totalExpense) - parseFloat(previous) + parseFloat(current);
+            await user.save();
+        }
+    }
+});
+
+Expense.addHook('afterDestroy', async (expense, options) => {
+    const user = await userDetails.findByPk(expense.userID);
+    if (user) {
+        user.totalExpense = parseFloat(user.totalExpense) - parseFloat(expense.amount);
+        await user.save();
+    }
+});
+
+
 
 app.use(express.static(path.join(__dirname, '../', 'frontend')));
 app.use(express.json());
@@ -370,30 +406,22 @@ app.get('/premiumUser', async (req, res) => {
 
 app.get('/premiumFeature', async (req, res) => {
     try {
-        const userExpense = await Expense.findAll({
-            attributes: [
-                [Sequelize.col('userDetail.userName'), 'userName'],
-                [Sequelize.fn('SUM', Sequelize.col('amount')), 'total']
-            ],
-            include: {
-                model: userDetails,
-                attributes: []
-            },
-            group: ['userDetail.id'],
-            order: [[Sequelize.fn('SUM', Sequelize.col('amount')), 'DESC']]
+        const leaderboard = await userDetails.findAll({
+            attributes: ['userName', 'totalExpense'],
+            order: [['totalExpense', 'DESC']]
         });
+
         res.json({
             success: true,
-            sortedExpense: userExpense.map(expense => ({
-                userName: expense.dataValues.userName,
-                total: parseFloat(expense.dataValues.total)
-            }))
-        })
+            sortedExpense: leaderboard.map(user => ({
+                userName: user.userName,
+                total: parseFloat(user.totalExpense),
+            })),
+        });
     } catch (err) {
-        console.log(err);
-        res.status(500).json({success: false, message: 'Data not taken'});
+        console.error('Error fetching leaderboard data:', err);
+        res.status(500).json({ success: false, message: 'Data not taken' });
     }
-    
 });
 
 
