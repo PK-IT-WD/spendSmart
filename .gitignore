@@ -1,2 +1,7 @@
 /backend/node_modules/
 /backend/.env
+/backend/access.log
+/backend/database-error.txt
+/backend/error-log.txt
+/backend/password-message.txt
+transaction-error.txt
