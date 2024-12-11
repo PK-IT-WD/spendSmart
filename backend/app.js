@@ -16,12 +16,8 @@ require('dotenv').config();
 const app = express();
 app.use(helmet());
 
-const logFile = process.env.LOG_FILE;
-const logStream = fs.createWriteStream(
-    path.join(__dirname, logFile),
-    {flags: 'a'}
-);
-app.use(morgan('combined', {stream: logStream}));
+const logStream = fs.createWriteStream(path.join(__dirname, 'access.log'),{flags: 'a'});
+app.use(morgan('combined', {stream: logStream}));  
 
 app.use(
   helmet.contentSecurityPolicy({
@@ -64,8 +60,7 @@ const checkBucket = async (bucketName) => {
 }
 
 const bucketError = (error) => {
-    const errorLog = process.env.ERROR_LOG;
-    const filePath = path.join(__dirname, errorLog);
+    const filePath = path.join(__dirname, 'database-error.txt');
     const errorMessage = `[${new Date.toISOString()}] ${error.name}: ${error.message}\nStack Trace: ${error.stack}\n\n`;
     fs.appendFile(filePath, errorMessage, (err) => {
         if (err) {
@@ -505,8 +500,7 @@ app.post('/createTransaction', async (req, res) => {
 });
 
 const transactionError = (error) => {
-    const TransactionError = process.env.TRANSACTION_ERROR;
-    const filePath = path.join(__dirname, TransactionError);
+    const filePath = path.join(__dirname, 'transaction-error.txt');
     const errorMessage = `[${new Date().toISOString()}] Error: ${error.message}\nStack Trace: ${error.stack}\n\n`;
     fs.appendFile(filePath, errorMessage, (err) => {
         if (err) {
@@ -600,8 +594,7 @@ app.post('/recoverPassword', async (req, res) => {
 });
 
 const passwordMessage = (message) => {
-    const password = process.env.PASSWORD_MESSAGE;
-    const filePath = path.join(__dirname, password);
+    const filePath = path.join(__dirname, 'password-message.txt');
     const passwordMessage = `[${new Date().toISOString()}] ${message}`;
     fs.appendFile(filePath, passwordMessage, (err) => {
         console.log('Failed to write file', err);
