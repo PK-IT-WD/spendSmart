@@ -234,8 +234,7 @@ sequelize.sync({ alter: true })
     });
 
 const databaseError = (error) => {
-    const databaseError = process.env.DATABASE_ERROR;
-    const filePath = path.join(__dirname, databaseError);
+    const filePath = path.join(__dirname, 'database-error.text');
     const errorMessage = `[${new Date().toISOString()}] Error: ${error.message}\nStack Trace: ${error.stack}\n\n`;
     fs.appendFile(filePath, errorMessage, (err) => {
         if (err) {
