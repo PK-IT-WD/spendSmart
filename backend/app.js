@@ -96,9 +96,10 @@ const sequelize = new Sequelize(
     process.env.DB_USER,
     process.env.DB_PASSWORD,
     {
-    host: process.env.DB_HOST,
-    dialect: process.env.DB_DIALECT
-}
+        host: process.env.DB_HOST,
+        dialect: process.env.DB_DIALECT,
+        port: process.env.DB_PORT || 3306,
+    }
 );
 
 const userDetails = sequelize.define('userDetails', {
@@ -872,7 +873,7 @@ app.get('/previousDownload', async (req, res) => {
     }
 });
 
-const PORT = process.env.PORT;
+const PORT = process.env.DB_PORT;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });

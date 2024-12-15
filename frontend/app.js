@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (expenseForm || allExpense) {
         if (typeof displayAllExpense === 'function') {
-            await limitDropdown();
+            limitDropdown();
             await displayAllExpense();
         }
         if (typeof checkStatus === 'function') {
