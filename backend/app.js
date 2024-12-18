@@ -11,10 +11,16 @@ const {S3Client, PutObjectCommand, CreateBucketCommand, HeadBucketCommand} = req
 const moment = require('moment');
 const helmet = require('helmet');
 const morgan = require('morgan');
+const https = require('https');
 require('dotenv').config();
 
 const app = express();
 app.use(helmet());
+
+const options = {
+    key: fs.readFileSync('/etc/ssl/private/nginx-selfsigned.key'),
+    cert: fs.readFileSync('/etc/ssl/certs/nginx-selfsigned.crt')
+}
 
 const logStream = fs.createWriteStream(path.join(__dirname, 'access.log'),{flags: 'a'});
 app.use(morgan('combined', {stream: logStream}));  
@@ -873,6 +879,6 @@ app.get('/previousDownload', async (req, res) => {
 });
 
 const PORT = process.env.PORT;
-app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server is running on port ${PORT}`);
+https.createServer(options, app).listen(PORT, '0.0.0.0', () => {
+    console.log("Server running on https://3.111.42.28:3000");
 });
