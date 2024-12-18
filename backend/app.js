@@ -336,13 +336,14 @@ app.post('/login', async (req, res) => {
 
 app.post('/signup', async (req, res) => {
     const body = req.body;
-
+    console.log(body)
     try {
         const registeredUser = await userDetails.findOne({
             where: {
                 email: body.email
             }
         });
+        console.log(registeredUser)
         if (!registeredUser) {
             const salt = bcryptjs.genSaltSync(10);
             const encryptedPassword = bcryptjs.hashSync(body.password, salt);
@@ -352,6 +353,7 @@ app.post('/signup', async (req, res) => {
                 email: body.email,
                 password: encryptedPassword,
             });
+            console.log(newUser)
             res.status(200).json({
                 success: true,
                 newUser
