@@ -105,6 +105,12 @@ const sequelize = new Sequelize(
         host: process.env.DB_HOST,
         dialect: process.env.DB_DIALECT,
         port: process.env.DB_PORT || 3306,
+        pool: {
+            max: 5,
+            min: 0,
+            acquire: 30000,
+            idle: 10000,
+          },
     }
 );
 
@@ -231,12 +237,16 @@ orders.belongsTo(userDetails, { foreignKey: 'userID' });
 userDetails.hasMany(forgotPassword, { foreignKey: 'userID'});
 forgotPassword.belongsTo(userDetails, { foreignKey: 'userID'});
 
+sequelize.authenticate()
+    .then(() => console.log('Connection established successfully'))
+    .catch(err => console.error('Unable to connect to the database:', err));
+
 sequelize.sync({ alter: true })
     .then(() => {
         console.log('Database synchronized');
     })
     .catch(err => {
-        databaseError(err);
+        console.error('Error syncing database:', err);
     });
 
 const databaseError = (error) => {
@@ -362,6 +372,7 @@ app.post('/signup', async (req, res) => {
             res.status(400).json({ success: false, message: 'User Already exists' });
         }
     } catch (err) {
+        console.error('Error in signup endpoint:', err);
         res.status(500).json({ success: false, message: 'User details not added' });
     }
 });
