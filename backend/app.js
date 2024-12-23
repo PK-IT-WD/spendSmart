@@ -886,6 +886,6 @@ app.get('/previousDownload', async (req, res) => {
 });
 
 const PORT = process.env.PORT;
-https.createServer(options, app).listen(PORT, '0.0.0.0', () => {
+app.createServer(options, app).listen(PORT, '0.0.0.0', () => {
     console.log("Server running on https://13.234.48.175:3000");
 });
