@@ -98,13 +98,7 @@ const sequelize = new Sequelize(
     {
         host: process.env.DB_HOST,
         dialect: process.env.DB_DIALECT,
-        port: process.env.DB_PORT || 3306,
-        pool: {
-            max: 5,
-            min: 0,
-            acquire: 30000,
-            idle: 10000,
-          },
+        port: process.env.DB_PORT || 3306
     }
 );
 
@@ -886,6 +880,6 @@ app.get('/previousDownload', async (req, res) => {
 });
 
 const PORT = process.env.PORT;
-app.createServer(options, app).listen(PORT, '0.0.0.0', () => {
-    console.log("Server running on https://13.234.48.175:3000");
+app.listen(PORT, '0.0.0.0', () => {
+    console.log("Server running on https://13.232.225.109:3000");
 });
