@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
+const https = require('https');
 const { Sequelize, DataTypes, Op } = require('sequelize');
 const bcryptjs = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -16,8 +17,13 @@ require('dotenv').config();
 const app = express();
 app.use(helmet());
 
+const privateKey = fs.readFileSync('/etc/ssl/private/selfsigned.key', 'utf8');
+const certificate = fs.readFileSync('/etc/ssl/certs/selfsigned.crt', 'utf8');
+const ca = fs.readFileSync('/etc/ssl/certs/selfsigned.crt', 'utf8');
+const credentials = { key: privateKey, cert: certificate, ca: ca };
+
 const logStream = fs.createWriteStream(path.join(__dirname, 'access.log'),{flags: 'a'});
-app.use(morgan('combined', {stream: logStream}));  
+app.use(morgan('combined', {stream: logStream}));
 
 app.use(
   helmet.contentSecurityPolicy({
@@ -80,7 +86,7 @@ const s3Upload = async (bucketName, keyName, data) => {
       });
   
       await s3.send(command);
-      return `https://${bucketName}.s3.${region}.amazonaws.com/${keyName}`;
+      return `http://${bucketName}.s3.${region}.amazonaws.com/${keyName}`;
     } catch (err) {
       console.error('Error uploading file to S3:', err);
       throw err;
@@ -576,7 +582,7 @@ app.post('/recoverPassword', async (req, res) => {
             userID: user.id
         });
 
-        const resetLink = `http://localhost:3000/resetPassword/${resetRequest.UUID}`;
+        const resetLink = `https://13.127.99.27:443/resetPassword/${resetRequest.UUID}`;
         const sendLink = {
             to: [{ email: recoveryDetail }],
             sender: { email: process.env.EMAIL, name: 'SpendSmart' },
@@ -879,7 +885,6 @@ app.get('/previousDownload', async (req, res) => {
     }
 });
 
-const PORT = process.env.PORT;
-app.listen(PORT, '0.0.0.0', () => {
-    console.log("Server running on https://13.232.225.109:3000");
+https.createServer(credentials, app).listen(443, () => {
+    console.log('Server running on https://13.127.99.27:443');
 });
