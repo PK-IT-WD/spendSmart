@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     password: document.getElementById('password').value
                 }
         
-                const response = await fetch('https://13.127.99.27:443/signup', {
+                const response = await fetch('https://13.127.99.27:8080/signup', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(userDetails)
@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     password: document.getElementById('password').value
                 }
             
-                const response = await fetch('https://13.127.99.27:443/login', {
+                const response = await fetch('https://13.127.99.27:8080/login', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(userDetails)
@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         event.preventDefault();
                         const recoveryDetail = document.getElementById('userData').value;
     
-                        const response = await fetch('https://13.127.99.27:443/recoverPassword', {
+                        const response = await fetch('https://13.127.99.27:8080/recoverPassword', {
                             method: 'POST',
                             headers: {'Content-Type': 'application/json'},
                             body: JSON.stringify({recoveryDetail})
@@ -156,7 +156,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     return;
                 }
     
-                const response = await fetch('https://13.127.99.27:443/addExpense', {
+                const response = await fetch('https://13.127.99.27:8080/addExpense', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -218,7 +218,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         const limit = localStorage.getItem('limit') || 2
         try {
-            const response = await fetch(`https://13.127.99.27:443/allExpense?page=${page}&limit=${limit}`,
+            const response = await fetch(`https://13.127.99.27:8080/allExpense?page=${page}&limit=${limit}`,
                 {
                     method: 'GET',
                     headers: {
@@ -304,7 +304,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (!token) return message.innerHTML = `<p>Please login first</p>`;
         
         try {
-            const response = await fetch(`https://13.127.99.27:443/deleteExpense/${id}`,{
+            const response = await fetch(`https://13.127.99.27:8080/deleteExpense/${id}`,{
                 method: 'DELETE',
                 headers: { 
                     'Content-Type': 'application/json',
@@ -325,7 +325,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const token = localStorage.getItem('token');
 
         try {
-            const response = await fetch('https://13.127.99.27:443/premiumUser', {
+            const response = await fetch('https://13.127.99.27:8080/premiumUser', {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -363,7 +363,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 if (incomeButton) {
                     incomeButton.addEventListener('click', async () => {
                         try {
-                            const response = await fetch('https://13.127.99.27:443/incomeDetails', {
+                            const response = await fetch('https://13.127.99.27:8080/incomeDetails', {
                                 method: 'GET',
                                 headers: {
                                     'Authorization': `Bearer ${token}`
@@ -412,7 +412,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 if (dailyButton) {
                     dailyButton.addEventListener('click', async() => {
                         try {
-                            const response = await fetch('https://13.127.99.27:443/dailyExpense', {
+                            const response = await fetch('https://13.127.99.27:8080/dailyExpense', {
                                 method: 'GET',
                                 headers: {
                                     'Authorization': `Bearer ${token}` 
@@ -478,7 +478,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 if (weeklyButton) {
                     weeklyButton.addEventListener('click', async () => {
                         try {
-                            const response = await fetch('https://13.127.99.27:443/weeklyExpense', {
+                            const response = await fetch('https://13.127.99.27:8080/weeklyExpense', {
                                 method: 'GET',
                                 headers: {
                                     'Authorization': `Bearer ${token}`
@@ -543,7 +543,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 if (monthlyButton) {
                     monthlyButton.addEventListener('click', async () => {
                         try {
-                            const response = await fetch('https://13.127.99.27:443/monthlyExpense', {
+                            const response = await fetch('https://13.127.99.27:8080/monthlyExpense', {
                                 method: 'GET',
                                 headers: {
                                     'Authorization': `Bearer ${token}`
@@ -614,7 +614,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 if (downloadButton) {
                     downloadButton.addEventListener('click', async () => {
                         try {
-                            const response = await fetch('https://13.127.99.27:443/download', {
+                            const response = await fetch('https://13.127.99.27:8080/download', {
                                 method: 'GET',
                                 headers: {
                                     'Authorization': `Bearer ${token}`
@@ -706,7 +706,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 if (leaderboardDiv) {
                     leaderboardButton.addEventListener('click', async () => {
                         try {
-                            const response = await fetch('https://13.127.99.27:443/premiumFeature', {
+                            const response = await fetch('https://13.127.99.27:8080/premiumFeature', {
                                 method: 'GET'
                             });
                             
@@ -742,7 +742,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         }
             
                         try {
-                            const response = await fetch('https://13.127.99.27:443/premiumMembership', {
+                            const response = await fetch('https://13.127.99.27:8080/premiumMembership', {
                                 method: 'GET',
                                 headers: {'Content-Type': 'application/json'}
                             });
@@ -767,7 +767,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             
                                         const token = localStorage.getItem('token');
                                         try {
-                                            const response = await fetch('https://13.127.99.27:443/createTransaction', {
+                                            const response = await fetch('https://13.127.99.27:8080/createTransaction', {
                                                 method: 'POST',
                                                 headers: {
                                                     'Content-Type': 'application/json',
@@ -814,7 +814,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const UUID = document.getElementById('UUID').value.trim();
                 if (!newPassword || !UUID) return alert('Both fields are required!');
 
-                const response = await fetch('https://13.127.99.27:443/updatePassword', {
+                const response = await fetch('https://13.127.99.27:8080/updatePassword', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ UUID, newPassword }),
