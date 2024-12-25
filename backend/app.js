@@ -582,7 +582,7 @@ app.post('/recoverPassword', async (req, res) => {
             userID: user.id
         });
 
-        const resetLink = `https://13.127.99.27:8080/resetPassword/${resetRequest.UUID}`;
+        const resetLink = `https://13.127.99.27:8081/resetPassword/${resetRequest.UUID}`;
         const sendLink = {
             to: [{ email: recoveryDetail }],
             sender: { email: process.env.EMAIL, name: 'SpendSmart' },
@@ -885,6 +885,6 @@ app.get('/previousDownload', async (req, res) => {
     }
 });
 
-https.createServer(credentials, app).listen(8080, () => {
-    console.log('Server running on https://13.127.99.27:8080');
+https.createServer(credentials, app).listen(8081, () => {
+    console.log('Server running on https://13.127.99.27:8081');
 });
